@@ -3,6 +3,9 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -18,7 +21,7 @@ app.get("/", (req, res) => {
 app.post('/route', async (req, res) => {
   const { origin, destination, mode } = req.body;
 
-  const googleMapsKey = 'AIzaSyC_kv5ej-7iDRWjnyWV2CzpLaEwDCXUkDA';
+  const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
   const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=${mode}&key=${googleMapsKey}`;
 
   try {
