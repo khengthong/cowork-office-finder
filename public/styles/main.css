@@ -1,0 +1,21 @@
+html {
+    background-color: green;
+}
+
+.flex-container {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#origin,#destination {
+   /* font-size:18pt; */
+    width:300px;
+   /* width:200px; */
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+}
