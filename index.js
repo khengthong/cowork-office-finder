@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 app.post('/route', async (req, res) => {
   const { origin, destination, mode } = req.body;
 
-  const googleMapsKey = 'AIzaSyC_kv5ej-7iDRWjnyWV2CzpLaEwDCXUkDA';
+  const googleMapsKey = '';
   const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=${mode}&key=${googleMapsKey}`;
 
   try {
