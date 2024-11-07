@@ -43,27 +43,24 @@ $(document).ready(function() {
             if (status === 'OK') {
                 directionsRenderer.setDirections(result);
 
- // Extracting route information
- const route = result.routes[0]; // Get the first (best) route
+                // Extracting route information
+                const route = result.routes[0]; // Get the first (best) route
+                $('#distance').text(route.legs[0].distance.text);
+                $('#duration').text(route.legs[0].duration.text);
 
- // Total distance
- const distance = route.legs[0].distance.text;
- // Total duration
- const duration = route.legs[0].duration.text;
- // Estimated arrival time
- const arrivalTime = new Date(Date.now() + route.legs[0].duration.value * 1000).toLocaleTimeString(); // if you need live traffic
- // Start and end addresses
- const startAddress = route.legs[0].start_address;
- const endAddress = route.legs[0].end_address;
+                const estimatedArrival = new Date(Date.now() + route.legs[0].duration.value * 1000);
 
- // Log the information to the console for demonstration
- console.log('Distance: ' + distance);
- console.log('Duration: ' + duration);
- console.log('Estimated Arrival Time: ' + arrivalTime);
- console.log('Start Address: ' + startAddress);
- console.log('End Address: ' + endAddress);
+                // Format the arrival time in hh:mm am/pm
+                const options = {
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    hour12: true // Use 12-hour format with am/pm
+                };
+                const arrivalTime = estimatedArrival.toLocaleString('en-US', options);
 
- // Optional: Extract steps and display them
+                $('#estimatedArrivalTime').text(arrivalTime); 
+                
+  // Optional: Extract steps and display them
  const steps = route.legs[0].steps;
  steps.forEach((step, index) => {
      console.log((index + 1) + ': ' + step.instructions + ' (' + step.distance.text + ', ' + step.duration.text + ')');

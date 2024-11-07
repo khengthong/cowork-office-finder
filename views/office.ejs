@@ -39,7 +39,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="departureDate">Departure Date:</label>
+                        <input type="date" id="departureDate" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="departureTime">Departure Time:</label>
+                        <input type="time" id="departureTime" class="form-control" value="">
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col">
                         <label for="modeOfTransport">Mode of Transport:</label>
@@ -53,19 +65,27 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="departureDate">Departure Date:</label>
-                        <input type="date" id="departureDate" class="form-control" value="">
+                        <button id="showDirectionBtn" class="btn btn-success">Refresh</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="Distance">Distance:</label>
+                        <div class="card"><p id="distance" class="card-text">13.4 KM</p></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="departureTime">Departure Time:</label>
-                        <input type="time" id="departureTime" class="form-control" value="">
+                        <label for="Duration">Duration:</label>
+                        <div class="card"><p id="duration" class="card-text">47 mins</p></div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col">
-                        <button id="showDirectionBtn" class="btn btn-success">Show direction</button>
+                        <label for="EstimatedArrivalTime">Estimated Arrival Time:</label>
+                        <div class="card"><p id="estimatedArrivalTime" class="card-text">23:28:57</p></div>
                     </div>
                 </div>
             </div>

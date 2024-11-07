@@ -12,7 +12,7 @@ dotenv.config();
 /* setting up some app resources */
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
-const port = process.env.serverport;
+const port = process.env.PORT;
 
 /* setting up and connecting to postgress db */
 const db = new pg.Client({
