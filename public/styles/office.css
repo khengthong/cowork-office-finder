@@ -1,0 +1,42 @@
+.card {
+    display: flex;
+    align-items: left;
+}
+.card-body {
+    display: flex;
+    flex-direction: row;
+}
+.card-body img {
+    max-width: 200px;
+    max-height: 200px;
+    margin-right: 1rem;
+}
+.card-body .content {
+    display: flex;
+    flex-direction: column;
+}
+#map {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.utilization {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 10px; /* Adjust height as necessary */
+    margin-top: 5px; /* Space above the bar */
+}
+
+.utilization-bar {
+    background-color: #76c7c0; /* Color for the utilized portion */
+    height: 100%;
+    transition: width 0.3s; /* Smooth transition */
+}
+
+.utilization-text {
+    text-align: center; /* Center the text below the bar */
+    margin-top: 2px; /* Space between bar and text */
+    font-weight: bold; /* Make the text bold */
+}
