@@ -29,11 +29,11 @@
                             <p id="officeAddress" class="card-text"><%= address; %></p>
 
                             <!-- Utilization Display -->
+                            <div class="utilization-text">
+                                <span><%= ((currcap / maxcap) * 100).toFixed(0) %>% occupied (<%= currcap %>/<%= maxcap %>)</span>
+                            </div>
                             <div class="utilization">
                                 <div class="utilization-bar" style="width: <%= ((currcap / maxcap) * 100).toFixed(2) %>%;"></div>
-                            </div>
-                            <div class="utilization-text">
-                                <span><%= currcap %> / <%= maxcap %> occupied</span>
                             </div>
                         </div>
                     </div>
@@ -56,10 +56,10 @@
                     <div class="col">
                         <label for="modeOfTransport">Mode of Transport:</label>
                         <select id="modeOfTransport" class="form-control">
-                            <option value="DRIVING">Driving</option>
+                            <option value="TRANSIT" selected="selected">Bus / MRT</option>
                             <option value="BICYCLING">Cycling</option>
+                            <option value="DRIVING">Driving</option>
                             <option value="WALKING">Walking</option>
-                            <option value="TRANSIT" selected="selected">Transit</option>
                         </select>
                     </div>
                 </div>
@@ -73,19 +73,19 @@
                 <div class="row mb-3">
                     <div class="col">
                         <label for="Distance">Distance:</label>
-                        <div class="card"><p id="distance" class="card-text">13.4 KM</p></div>
+                        <div class="card"><p id="distance" class="card-text"></p></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
                         <label for="Duration">Duration:</label>
-                        <div class="card"><p id="duration" class="card-text">47 mins</p></div>
+                        <div class="card"><p id="duration" class="card-text"></p></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
                         <label for="EstimatedArrivalTime">Estimated Arrival Time:</label>
-                        <div class="card"><p id="estimatedArrivalTime" class="card-text">23:28:57</p></div>
+                        <div class="card"><p id="estimatedArrivalTime" class="card-text"></p></div>
                     </div>
                 </div>
             </div>

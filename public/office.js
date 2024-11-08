@@ -20,14 +20,12 @@ $(document).ready(function() {
     $('#showDirectionBtn').click(showMap);
     
     function showMap() {
-         let mode = $('#modeOfTransport').val();
+        let mode = $('#modeOfTransport').val();
         let date = $('#departureDate').val();
         let time = $('#departureTime').val();
 
         let start = $('#currentLocation').prop("innerText"); 
         let end = $('#officeAddress').prop("innerText"); 
-
-    //    alert ("start: " + start + ", end: " + end);
 
         let request = {
             origin: { query: start },
@@ -58,14 +56,7 @@ $(document).ready(function() {
                 };
                 const arrivalTime = estimatedArrival.toLocaleString('en-US', options);
 
-                $('#estimatedArrivalTime').text(arrivalTime); 
-                
-  // Optional: Extract steps and display them
- const steps = route.legs[0].steps;
- steps.forEach((step, index) => {
-     console.log((index + 1) + ': ' + step.instructions + ' (' + step.distance.text + ', ' + step.duration.text + ')');
- });
-      
+                $('#estimatedArrivalTime').text(arrivalTime);      
             } else {
                 alert('Directions request failed due to ' + status);
             }
