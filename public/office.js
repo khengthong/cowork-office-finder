@@ -1,12 +1,12 @@
 $(document).ready(function() {
 
-    // Set default values for date and time
+    // set default values for date and time
     let today = new Date().toISOString().split('T')[0];
     $('#departureDate').val(today);
     let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     $('#departureTime').val(currentTime);
 
-    // Initialize Google Map
+    // initialize Google Map
     let map = new google.maps.Map(document.getElementById('map'), {
         zoom: 14,
         center: {lat: -34.397, lng: 150.644}
@@ -15,24 +15,32 @@ $(document).ready(function() {
     let directionsService = new google.maps.DirectionsService();
     let directionsRenderer = new google.maps.DirectionsRenderer();
     directionsRenderer.setMap(map);
-    showMap();
-
-    $('#showDirectionBtn').click(showMap);
     
-    function showMap() {
-        let mode = $('#modeOfTransport').val();
-        let date = $('#departureDate').val();
-        let time = $('#departureTime').val();
+    $('#showDirectionBtn').click(showMapandWeather);
+    showMapandWeather();
 
-        let start = $('#currentLocation').prop("innerText"); 
-        let end = $('#officeAddress').prop("innerText"); 
+    // show map and weather data
+    function showMapandWeather () {
+        var originAddress = $('#currentLocation').prop("innerText"); 
+        var endAddress = $('#officeAddress').prop("innerText"); 
+        var departureDate = $('#departureDate').val();
+        var departureTime = $('#departureTime').val();
+        var modeOfTransport = $('#modeOfTransport').val();
+
+        fetchMap(originAddress, endAddress, departureDate, departureTime, modeOfTransport);
+        fetchWeatherData(departureDate, departureTime);
+    }
+    
+    // fetch route based on origin address, destination address, departure date/time and mode of transport
+    function fetchMap(originAddress, endAddress, departureDate, departureTime, modeOfTransport) {     
+        var departureDateTime = new Date(`${departureDate}T${departureTime}`);
 
         let request = {
-            origin: { query: start },
-            destination: { query: end },
-            travelMode: google.maps.TravelMode[mode.toUpperCase()],
+            origin: { query: originAddress },
+            destination: { query: endAddress },
+            travelMode: google.maps.TravelMode[modeOfTransport.toUpperCase()],
             drivingOptions: {
-                departureTime: new Date(`${date}T${time}`),
+                departureTime: departureDateTime,
                 trafficModel: 'bestguess'
             }
         };
@@ -41,25 +49,127 @@ $(document).ready(function() {
             if (status === 'OK') {
                 directionsRenderer.setDirections(result);
 
-                // Extracting route information
-                const route = result.routes[0]; // Get the first (best) route
-                $('#distance').text(route.legs[0].distance.text);
-                $('#duration').text(route.legs[0].duration.text);
+                // extract route information
+                var route = result.routes[0]; // get the first (best) route
+                $('#distance').val(route.legs[0].distance.text);
+                $('#duration').val(route.legs[0].duration.text);
 
-                const estimatedArrival = new Date(Date.now() + route.legs[0].duration.value * 1000);
+                var arrivalDateTime = new Date(departureDateTime.getTime()); // clone the date object
+                arrivalDateTime.setMinutes(arrivalDateTime.getMinutes() + parseDuration(route.legs[0].duration.text));
 
-                // Format the arrival time in hh:mm am/pm
-                const options = {
+                // format the arrival time in hh:mm am/pm
+                var options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
                     hour: 'numeric', 
                     minute: 'numeric', 
-                    hour12: true // Use 12-hour format with am/pm
+                    hour12: true
                 };
-                const arrivalTime = estimatedArrival.toLocaleString('en-US', options);
-
-                $('#estimatedArrivalTime').text(arrivalTime);      
+                
+                $('#estimatedArrivalTime').val(arrivalDateTime.toLocaleString('en-GB', options).replace(',', ''));      
             } else {
                 alert('Directions request failed due to ' + status);
             }
         });
+    }
+
+    // parse the duration string, e.g. 10 mins, to return duration in minutes
+    function parseDuration(durationStr) {
+        const regex = /(\d+)\s*(hour|hours|h|min|mins|minutes|m)/gi; // regex to match hours and minutes
+        let totalMinutes = 0;
+      
+        // match all occurrences of hours and minutes
+        let match;
+        while ((match = regex.exec(durationStr)) !== null) {
+            const value = parseInt(match[1], 10); // get the numeric value
+            const unit = match[2].toLowerCase(); // get the unit (hour/min)
+      
+            if (unit.startsWith('hour')) {
+                totalMinutes += value * 60; // convert hours to minutes
+            } else if (unit.startsWith('min')) {
+                totalMinutes += value; // just add the minutes
+            }
+        }
+      
+        return totalMinutes; // return total minutes
+    }  
+
+    // fetch weather data from NEA weather API and filter by date & time
+    function fetchWeatherData(date, time) {
+        var userSelectedDate = date + "T" + time + ":00";
+        
+        var apiUrl = `https://api-open.data.gov.sg/v2/real-time/api/twenty-four-hr-forecast?date=${encodeURIComponent(userSelectedDate)}`;
+
+        axios.get(apiUrl)
+            .then(response => {
+                // handle successful response, accessing specific data from the response
+                var forecast = response.data.data.records[0];
+              
+                $('#temperature').text(forecast.general.temperature.high + "°C");
+                $('#weatherperiod').text("NEA forecast: " + forecast.general.validPeriod.text);
+
+                var periods = forecast.periods;
+                var userDate = new Date(userSelectedDate);
+                var found = false;
+
+                for (i = 0; i < periods.length && !found; i++) {    
+                    var startDateTime = new Date(periods[i].timePeriod.start);
+                    var endDateTime = new Date(periods[i].timePeriod.end);
+            
+                    if (userDate >= startDateTime && userDate <= endDateTime) {
+                        $('#weather').text(periods[i].regions.central.text);
+                        $('#weatherimg').attr("src", getWeatherIcon(periods[i].regions.central.text));
+                        found = true;
+                    }
+                }    
+            })
+            .catch(error => {
+                // Handle error here
+                if (error.response) {
+                    console.error('Error Status Code:', error.response.status);
+                    console.error('Error Response Data:', error.response.data);
+                    console.error('Return Code:', error.response.data.code);
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                } else {
+                    console.error('Error:', error);
+                }
+            });
+    }
+
+    // get weather icon to display based on forecast returned by NEA API
+    function getWeatherIcon (forecast) {
+    
+        let img = "";
+
+        switch (forecast) {
+            case "Fair": img = "fair-day"; break;
+            case "Fair (Day)": img = "fair-day"; break;
+            case "Fair (Night)": img = "fair-night"; break;
+            case "Fair and Warm": img = "fair-warm"; break;
+            case "Partly Cloudy": img = "partly-cloudy-day"; break;
+            case "Partly Cloudy (Day)": img = "partly-cloudy-day"; break;
+            case "Partly Cloudy (Night)": img = "partly-cloudy-night"; break;
+            case "Cloudy": img = "cloudy"; break;
+            case "Hazy": img = "hazy"; break;
+            case "Slightly Hazy": img = "hazy"; break;
+            case "Windy": img = "windy"; break;
+            case "Mist": img = "mist"; break;
+            case "Fog": img = "fog"; break;
+            case "Light Rain": img = "light-rain"; break;
+            case "Moderate Rain": img = "moderate-rain"; break;
+            case "Heavy Rain": img = "heavy-rain"; break;
+            case "Passing Showers": img = "passing-showers"; break;
+            case "Light Showers": img = "light-rain"; break;
+            case "Showers": img = "moderate-rain"; break;
+            case "Heavy Showers": img = "heavy-rain"; break;
+            case "Thundery Showers": img = "thundery-showers"; break;
+            case "Heavy Thundery Showers": img = "heavy-thundery-showers"; break;  
+            case "Heavy Thundery Showers with Gusty Winds": img = "heavy-thundery-showers"; break;
+            default: img = "fair-day"; break;
+        }
+
+        return "images/" + img + ".gif";
     }
 });

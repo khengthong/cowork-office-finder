@@ -55,8 +55,6 @@ $(document).ready(function() {
         // Calculate the total number of pages
         const totalPages = Math.ceil(offices.length / itemsPerPage);
 
-        console.log ("Total Pages: " + totalPages);
-
         // Clear existing cards
         let columns = [$('#column1'), $('#column2'), $('#column3')];
         columns.forEach(column => column.empty());
@@ -64,8 +62,6 @@ $(document).ready(function() {
         // Determine the start and end indices for the current page
         const startIndex = currentPage * itemsPerPage;
         const endIndex = Math.min(startIndex + itemsPerPage, offices.length);
-
-        console.log ("Start Index: " + startIndex + "End Index: " + endIndex);
 
         // Ensure we are not exceeding the available offices
         if (startIndex < offices.length) {

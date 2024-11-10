@@ -9,8 +9,8 @@
 }
 
 .card-body img {
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 140px;
+    max-height: 140px;
     margin-right: 1rem;
 }
 
@@ -29,7 +29,7 @@
     background-color: #e0e0e0;
     border-radius: 5px;
     overflow: hidden;
-    height: 10px;                   /* Adjust height as necessary */
+    height: 20px;                   /* Adjust height as necessary */
     margin-top: 5px;                /* Space above the bar */
 }
 
@@ -42,4 +42,8 @@
 .utilization-text {
     text-align: center;             /* Center the text below the bar */
     margin-top: 2px;                /* Space between bar and text */
+}
+
+.form-label {
+    margin-bottom: 0px;
 }

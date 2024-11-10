@@ -12,23 +12,26 @@
 <body>
     <div class="container mt-4">
         <div class="row">
-            <div class="col-md-6">
-                <!-- New Card for Current Location -->
-                <div class="card mb-3">
+
+            <div class="card col-md-6">
+                
+                <!-- Card for Current Location -->
+                <div class="mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">Current Location</h5><br>
-                        <p id="currentLocation" class="card-text"><%= currentLocation; %></p>
+                        <div class="content">
+                            <h5 class="card-title">Current Location: </h5>
+                            <p id="currentLocation" class="card-text"><%= currentLocation; %></p>
+                        </div>    
                     </div>
                 </div>
-                <!-- Existing Card for Office Details -->
-                <div class="card">
+
+                <!-- Card for selected Cowork Office Details -->
+                <div class="mb-3">
                     <div class="card-body">
-                        <img id="officeImage" src="<%= image; %>" alt="Office">
+                        <img id="officeImage" src="<%= image; %>" alt="Office" class="img-fluid mb-2">
                         <div class="content">
                             <h5 id="officeTitle" class="card-title"><%= title; %></h5>
                             <p id="officeAddress" class="card-text"><%= address; %></p>
-
-                            <!-- Utilization Display -->
                             <div class="utilization-text">
                                 <span><%= ((currcap / maxcap) * 100).toFixed(0) %>% occupied (<%= currcap %>/<%= maxcap %>)</span>
                             </div>
@@ -39,56 +42,59 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="departureDate">Departure Date:</label>
-                        <input type="date" id="departureDate" class="form-control" value="">
-                    </div>
+
+            <!-- Card for Distance, Duration, Estimated Arrival Time and Weather -->
+            <div class="card col-md-3 p-3" style="border: 1px solid #ccc; border-radius: 10px;">              
+                <div class="mb-3">
+                    <label for="distance" class="form-label" style="margin-bottom: 0px"></label>Distance:</label>
+                    <input type="text" id="distance" class="form-control form-control-sm" value="" style="background-color: lightgoldenrodyellow;" disabled>
                 </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="departureTime">Departure Time:</label>
-                        <input type="time" id="departureTime" class="form-control" value="">
-                    </div>
+                <div class="mb-3">
+                    <label for="duration" class="form-label" style="margin-bottom: 0px">Duration:</label>
+                    <input type="text" id="duration" class="form-control form-control-sm" value="" style="background-color: lightgoldenrodyellow;" disabled>
                 </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="modeOfTransport">Mode of Transport:</label>
-                        <select id="modeOfTransport" class="form-control">
-                            <option value="TRANSIT" selected="selected">Bus / MRT</option>
-                            <option value="BICYCLING">Cycling</option>
-                            <option value="DRIVING">Driving</option>
-                            <option value="WALKING">Walking</option>
-                        </select>
-                    </div>
+                <div class="mb-3">
+                    <label for="estimatedArrivalTime" class="form-label" style="margin-bottom: 0px">Estimated Arrival Time:</label>
+                    <input type="text" id="estimatedArrivalTime" class="form-control form-control-sm" value="" style="background-color: lightgoldenrodyellow;" disabled>
                 </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <button id="showDirectionBtn" class="btn btn-success">Refresh</button>
+            
+                <div class="weather-info">
+                    <div class="d-flex align-items-center mb-2">
+                        <span id="weather" class="me-2" style="color: blue; font-size: 12px;"></span>
+                        <img id="weatherimg" src="images/fair-day.gif" alt="Fair Weather" style="width: 32px; height: 32px;" class="me-1"> 
+                        <span class="me-1">|</span>
+                        <span style="font-size: 12px;">Now: </span>&nbsp;<span id="temperature" style="color: blue; font-size: 20px; font-weight: bold;"></span>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="Distance">Distance:</label>
-                        <div class="card"><p id="distance" class="card-text"></p></div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="Duration">Duration:</label>
-                        <div class="card"><p id="duration" class="card-text"></p></div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="EstimatedArrivalTime">Estimated Arrival Time:</label>
-                        <div class="card"><p id="estimatedArrivalTime" class="card-text"></p></div>
+                    <div class="d-flex mb-2">
+                        <span id="weatherperiod" style="color: grey; font-size: 10px;"></span>
                     </div>
                 </div>
             </div>
+
+            <!-- Card for Uset Input, i.e. Departure Date, Time and Mode of Transport -->
+            <div class="card col-md-3 p-3" style="border: 1px solid #ccc; border-radius: 10px;"> 
+                <div class="mb-3">
+                    <label for="departureDate" class="form-label" style="margin-bottom: 0px">Departure Date:</label>
+                    <input type="date" id="departureDate" class="form-control form-control-sm" style="background-color: lightcyan;" value="">
+                </div>
+                <div class="mb-3">
+                    <label for="departureTime" class="form-label" style="margin-bottom: 0px">Departure Time:</label>
+                    <input type="time" id="departureTime" class="form-control form-control-sm" style="background-color: lightcyan;" value="">
+                </div> 
+                <div class="mb-3">
+                    <label for="modeOfTransport" class="form-label" style="margin-bottom: 0px">Mode of Transport:</label>
+                    <select id="modeOfTransport" class="form-control form-control-sm" style="background-color: lightcyan;">
+                        <option value="TRANSIT" selected="selected">Bus / MRT</option>
+                        <option value="BICYCLING">Cycling</option>
+                        <option value="DRIVING">Driving</option>
+                        <option value="WALKING">Walking</option>
+                    </select>
+                </div> 
+                <div class="mb-3">
+                    <a id="showDirectionBtn" class="btn btn-primary form-control">Refresh</a>
+                </div>                    
+            </div>
+
         </div>
         
         <!-- Div for Google Map -->
@@ -97,6 +103,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=<%= process.env.GOOGLE_MAPS_API_KEY; %>"></script>
     <script src="office.js"></script>
 </body>

@@ -45,13 +45,10 @@ app.get("/", (req, res) => {
 /* handle HTTP Req: GET /start */
 app.get("/start", (req, res) => {
     res.render("start.ejs");
-//  res.render("test.ejs");
 });
 
 /* handle HTTP Req: GET /findoffices */
 app.get("/findoffices", async (req, res) => {
-  console.log ("Location: " + req.query.location);
-
   // Prepare origin address and destination addresses from office records
   const currentLocation = req.query.location;
   const destinations = offices.map(office => office.address).join('|'); // Join destinations with '|'
@@ -139,7 +136,6 @@ function getOffices () {
       console.error ("Error executing query", err.stack);
     } else {
       offices = res.rows;
-      console.log ("Row count: " + offices.length);
     }
   });
 }
