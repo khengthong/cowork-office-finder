@@ -1,7 +1,8 @@
 $(document).ready(function() {
-
     // set default values for date and time
-    let today = new Date().toISOString().split('T')[0];
+    //let today = new Date().toISOString().split('T')[0];
+    let today = new Date().toLocaleDateString('en-CA'); // 'en-CA' gives YYYY-MM-DD format;
+    
     $('#departureDate').val(today);
     let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     $('#departureTime').val(currentTime);
@@ -12,13 +13,16 @@ $(document).ready(function() {
         center: {lat: -34.397, lng: 150.644}
     });
 
+    let geocoder = new google.maps.Geocoder();
     let directionsService = new google.maps.DirectionsService();
     let directionsRenderer = new google.maps.DirectionsRenderer();
     directionsRenderer.setMap(map);
     
-    $('#showDirectionBtn').click(showMapandWeather);
     showMapandWeather();
 
+    // set handler for showDirectionBtn
+    $('#showDirectionBtn').click(showMapandWeather);
+    
     // show map and weather data
     function showMapandWeather () {
         var originAddress = $('#currentLocation').prop("innerText"); 
@@ -68,9 +72,8 @@ $(document).ready(function() {
                 };
                 
                 $('#estimatedArrivalTime').val(arrivalDateTime.toLocaleString('en-GB', options).replace(',', ''));      
-            } else {
-                alert('Directions request failed due to ' + status);
-            }
+            } else
+                alert('Failed to get directions from Google Map. Please try again.');
         });
     }
 
@@ -106,7 +109,7 @@ $(document).ready(function() {
                 // handle successful response, accessing specific data from the response
                 var forecast = response.data.data.records[0];
               
-                $('#temperature').text(forecast.general.temperature.high + "°C");
+                $('#temperature').text(forecast.general.temperature.low + " - " + forecast.general.temperature.high + "°C");
                 $('#weatherperiod').text("NEA forecast: " + forecast.general.validPeriod.text);
 
                 var periods = forecast.periods;
@@ -171,5 +174,30 @@ $(document).ready(function() {
         }
 
         return "images/" + img + ".gif";
+    }
+    
+    // set handler for refreshLocationBtn 
+    $('#refreshLocationBtn').click(refreshLocation);       
+    
+    // get or refresh location based on user's current location
+    function refreshLocation() {
+        // Get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+          //      initializeMap(latitude, longitude);
+
+                // Show address in 'CurrentLocation' input field
+                geocoder.geocode({'location': {lat: latitude, lng: longitude}}, function(results, status) {
+                    if (status === 'OK' && results[0]) {
+                            $('#currentLocation').text(results[0].formatted_address);      
+                            showMapandWeather();
+                    }
+                });
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
     }
 });

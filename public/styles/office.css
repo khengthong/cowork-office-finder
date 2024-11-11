@@ -47,3 +47,7 @@
 .form-label {
     margin-bottom: 0px;
 }
+
+#refreshLocationBtn:hover {
+    background-color: darkgreen; /* Darker shade on hover */
+}

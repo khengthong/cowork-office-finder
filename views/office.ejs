@@ -12,19 +12,24 @@
 <body>
     <div class="container mt-4">
         <div class="row">
-
-            <div class="card col-md-6">
+    
+            <div class="card col-md-5">
                 
                 <!-- Card for Current Location -->
                 <div class="mb-3">
                     <div class="card-body">
-                        <div class="content">
-                            <h5 class="card-title">Current Location: </h5>
-                            <p id="currentLocation" class="card-text"><%= currentLocation; %></p>
-                        </div>    
+                        <div class="d-flex justify-content-between align-items-start"> <!-- Flex container -->
+                            <div>
+                                <h5 class="card-title mb-0">Current Location:</h5>
+                                <p id="currentLocation" class="card-text mb-2"><%= currentLocation; %></p>
+                            </div>
+                            <div>
+                                <a id="refreshLocationBtn" class="btn btn-success" style="margin-left: 10px;">Refresh Location</a>
+                            </div>
+                        </div>  
                     </div>
                 </div>
-
+            
                 <!-- Card for selected Cowork Office Details -->
                 <div class="mb-3">
                     <div class="card-body">
@@ -42,9 +47,9 @@
                     </div>
                 </div>
             </div>
-
+    
             <!-- Card for Distance, Duration, Estimated Arrival Time and Weather -->
-            <div class="card col-md-3 p-3" style="border: 1px solid #ccc; border-radius: 10px;">              
+            <div class="card col-md-4 p-3" style="border: 1px solid #ccc; border-radius: 10px;">              
                 <div class="mb-3">
                     <label for="distance" class="form-label" style="margin-bottom: 0px"></label>Distance:</label>
                     <input type="text" id="distance" class="form-control form-control-sm" value="" style="background-color: lightgoldenrodyellow;" disabled>
@@ -61,9 +66,9 @@
                 <div class="weather-info">
                     <div class="d-flex align-items-center mb-2">
                         <span id="weather" class="me-2" style="color: blue; font-size: 12px;"></span>
-                        <img id="weatherimg" src="images/fair-day.gif" alt="Fair Weather" style="width: 32px; height: 32px;" class="me-1"> 
+                        <img id="weatherimg" src="images/cloudy.gif" alt="Fair Weather" style="width: 32px; height: 32px;" class="me-1"> 
                         <span class="me-1">|</span>
-                        <span style="font-size: 12px;">Now: </span>&nbsp;<span id="temperature" style="color: blue; font-size: 20px; font-weight: bold;"></span>
+                        <span style="font-size: 12px;">Now: </span>&nbsp;<span id="temperature" style="color: blue; font-size: 16px; font-weight: bold;"></span>
                     </div>
                     <div class="d-flex mb-2">
                         <span id="weatherperiod" style="color: grey; font-size: 10px;"></span>

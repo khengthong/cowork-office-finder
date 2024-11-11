@@ -1,39 +1,75 @@
 $(document).ready(function() {
-    let map;
-    let marker;
+    let map = null;
+    let marker = null;
     let geocoder = new google.maps.Geocoder();
     let offices = [];
     let currentPage = 0; // Track the current page
     const itemsPerPage = 6; // Number of items to display per page
 
-    // Initialize Google Map
-    function initializeMap(latitude, longitude) {
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: latitude, lng: longitude},
-            zoom: 15
-        });
+    refreshLocation();
+       
+    $('#refreshLocationBtn').click(refreshLocation);       
+    
+    // get or refresh location based on user's current location
+    function refreshLocation() {
+        // Get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+                initializeMap(latitude, longitude);
 
-        marker = new google.maps.Marker({
-            position: {lat: latitude, lng: longitude},
-            map: map,
-            animation: google.maps.Animation.BOUNCE
-        });
+                // Show address in 'CurrentLocation' input field
+                geocoder.geocode({'location': {lat: latitude, lng: longitude}}, function(results, status) {
+                    if (status === 'OK' && results[0])
+                            $('#currentLocation').val(results[0].formatted_address);      
+                });
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    }
+    
+    // initialize Google Map
+    function initializeMap(latitude, longitude) {
+        if (!map)
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: latitude, lng: longitude},
+                zoom: 15
+                });
+
+        if (!marker)
+            marker = new google.maps.Marker({
+                position: {lat: latitude, lng: longitude},
+                map: map,
+                animation: google.maps.Animation.BOUNCE
+                });
+        else {
+            map.setCenter({lat: latitude, lng: longitude});
+            marker.setPosition({lat: latitude, lng: longitude});
+        }
     }
 
-    // Function to geocode address and show on map
+    $('#showAddressBtn').click(function() {      
+        let address = $('#currentLocation').val();
+        showMap(address);
+    });
+
+    $('#findOfficesBtn').click(loadOffices);
+
+    // geocode address and show on map
     function showMap(address) {
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
                 map.setCenter(results[0].geometry.location);
                 marker.setPosition(results[0].geometry.location);
             } else {
-                alert('Geocode was not successful for the following reason: ' + status);
+                alert('The address is not found. Please enter a valid address.');
             }
         });
-    }
-
-    $('#findOfficesBtn').click(loadOffices);
-        
+    } 
+     
+    // load co-work offices from backend by ajax call
     function loadOffices() {
         let location = $('#currentLocation').val();
         
@@ -43,11 +79,12 @@ $(document).ready(function() {
             data: { location: location },
             success: displayOffices,
             error: function() {
-                alert('Failed to fetch offices data.');
+                alert('Failed to fetch office data from backend database. Please try again.');
             }
         });
     }
 
+    // callback to display offices upon successful loadOffice call
     function displayOffices(response) {
         // Assuming 'response' is an array of office objects
         offices = response; 
@@ -101,13 +138,13 @@ $(document).ready(function() {
         updatePaginationControls(totalPages);
     }
 
-    // Function to handle pagination
+    // handle pagination
     function changePage(increment) {
         currentPage += increment;
         displayOffices(offices);
     }
 
-    // Function to update pagination controls
+    // update pagination controls
     function updatePaginationControls(totalPages) {
         // Ensure the pagination toggle is shown only after cards are presented
         $('#pagination').show(); // Show the pagination and sort toggle
@@ -153,31 +190,6 @@ $(document).ready(function() {
 
         // Refresh the displayed cards after sorting
         displayOffices(offices); // This function should re-render the cards based on sorted offices
-    }
-
-    $('#refreshLocationBtn').click(function() {
-        let address = $('#currentLocation').val();
-        showMap(address);
-    });
-
-    // Get user's current location
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            initializeMap(latitude, longitude);
-
-            // Show address in 'CurrentLocation' input field
-            geocoder.geocode({'location': {lat: latitude, lng: longitude}}, function(results, status) {
-                if (status === 'OK') {
-                    if (results[0]) {
-                        $('#currentLocation').val(results[0].formatted_address);
-                    }
-                }
-            });
-        });
-    } else {
-        alert('Geolocation is not supported by this browser.');
     }
 
     $(document).on('click', '.card', function() {
