@@ -55,3 +55,20 @@
     text-align: center;             /* Center the text below the bar */
     margin-bottom: 2px;             /* Space between bar and text */
 }
+
+.btn-custom {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-custom:hover {
+    background-color: darkred; /* Change this as per your color scheme */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.btn-blue:hover {
+    background-color: darkblue; 
+}
+
+.btn-green:hover {
+    background-color: darkgreen; 
+}

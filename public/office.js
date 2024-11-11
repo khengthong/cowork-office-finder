@@ -186,8 +186,7 @@ $(document).ready(function() {
             navigator.geolocation.getCurrentPosition(function(position) {
                 let latitude = position.coords.latitude;
                 let longitude = position.coords.longitude;
-          //      initializeMap(latitude, longitude);
-
+      
                 // Show address in 'CurrentLocation' input field
                 geocoder.geocode({'location': {lat: latitude, lng: longitude}}, function(results, status) {
                     if (status === 'OK' && results[0]) {

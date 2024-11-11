@@ -13,6 +13,20 @@
     <div class="container mt-4">
         <!-- Input and Button Row -->
         <div class="row mb-3 align-items-end">
+            <div class="col-12 mb-2">
+                <label for="currentLocation">Current Location (or enter address, e.g. 'Ion Orchard', 'Singapore 117438'):</label>
+            </div>
+            <div class="col-12 col-md-8">
+                <input type="text" id="currentLocation" class="form-control" placeholder="Enter your location">
+            </div>
+            <div class="col-12 col-md-4 d-flex justify-content-between mt-2">
+                <button id="showAddressBtn" class="btn btn-custom" style="color: white; background-color: orangered;">Show Address</button>
+                <button id="refreshLocationBtn" class="btn btn-blue" style="color: white; background-color: blue;">Refresh Location</button>
+                <button id="findOfficesBtn" class="btn btn-green" style="color: white; background-color: green;">Find Offices</button>
+            </div>
+        </div>
+        
+        <!--    <div class="row mb-3 align-items-end">
             <label for="currentLocationLabel">Current Location (or enter address, e.g. 'Ion Orchard', 'Singapore 117438'):</label>
             <div class="col">
                 <input type="text" id="currentLocation" class="form-control" placeholder="Enter your location">
@@ -26,7 +40,7 @@
             <div class="col-auto">
                 <button id="findOfficesBtn" class="btn" style="color: white; background-color: green;">Find nearby Offices</button>
             </div>
-        </div>
+        </div>  -->
        
         <!-- Pagination and Sort Toggle -->
         <div id="pagination" class="d-flex justify-content-between align-items-center mb-3" style="display: none;">
