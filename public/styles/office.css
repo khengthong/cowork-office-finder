@@ -51,3 +51,8 @@
 #refreshLocationBtn:hover {
     background-color: darkgreen; /* Darker shade on hover */
 }
+
+ /* Hide the recommendation card by default */
+.hidden {
+    display: none;
+}

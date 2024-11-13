@@ -1,6 +1,5 @@
 $(document).ready(function() {
     // set default values for date and time
-    //let today = new Date().toISOString().split('T')[0];
     let today = new Date().toLocaleDateString('en-CA'); // 'en-CA' gives YYYY-MM-DD format;
     
     $('#departureDate').val(today);
@@ -18,6 +17,8 @@ $(document).ready(function() {
     let directionsRenderer = new google.maps.DirectionsRenderer();
     directionsRenderer.setMap(map);
     
+    let journey = {};
+
     showMapandWeather();
 
     // set handler for showDirectionBtn
@@ -25,26 +26,92 @@ $(document).ready(function() {
     
     // show map and weather data
     function showMapandWeather () {
-        var originAddress = $('#currentLocation').prop("innerText"); 
-        var endAddress = $('#officeAddress').prop("innerText"); 
         var departureDate = $('#departureDate').val();
         var departureTime = $('#departureTime').val();
-        var modeOfTransport = $('#modeOfTransport').val();
-
-        fetchMap(originAddress, endAddress, departureDate, departureTime, modeOfTransport);
-        fetchWeatherData(departureDate, departureTime);
-    }
-    
-    // fetch route based on origin address, destination address, departure date/time and mode of transport
-    function fetchMap(originAddress, endAddress, departureDate, departureTime, modeOfTransport) {     
         var departureDateTime = new Date(`${departureDate}T${departureTime}`);
 
+        journey = { 
+            originaddress: $('#currentLocation').prop("innerText"),
+            coofficename: $('#officeTitle').prop("innerText"),
+            coofficeaddress: $('#officeAddress').prop("innerText"),
+            priofficeaddress: "Singapore 117438",
+            departuredate: departureDate,
+            departuretime: departureTime,
+            departuredatetime: departureDateTime,
+            modeoftransport: $('#modeOfTransport').val(),
+            coofficeduration: "",
+            coofficedistance: "",
+            coofficearrivaltime: null,
+            primodeoftransport: "TRANSIT",
+            priofficeduration: "",
+            priofficedistance: ""
+        };
+                
+        fetchMap();
+        fetchWeatherData();
+    }
+    
+    function giveRecommendation() {
         let request = {
-            origin: { query: originAddress },
-            destination: { query: endAddress },
-            travelMode: google.maps.TravelMode[modeOfTransport.toUpperCase()],
+            origin: { query: journey.originaddress },
+            destination: { query: journey.priofficeaddress },
+            travelMode: google.maps.TravelMode[journey.primodeoftransport.toUpperCase()],
             drivingOptions: {
-                departureTime: departureDateTime,
+                departureTime: journey.departuredatetime,
+                trafficModel: 'bestguess'  // possible options: pessimistic, optimistic
+            }
+        };
+
+        directionsService.route(request, function(result, status) {
+            if (status === 'OK') {
+    
+                var route = result.routes[0]; // get the first (best) route
+                journey.priofficedistance = route.legs[0].distance.text;
+                journey.priofficeduration = route.legs[0].duration.text;                
+                var timesaving = parseDuration(journey.priofficeduration) - parseDuration(journey.coofficeduration);
+            
+                if (timesaving > 0) {
+                    $('#recommendation-row').removeClass('hidden');
+                    $('#recommendation').html("Good choice! Save <b>" + timesaving + " mins</b> on your commute by choosing the coworking office at <b>" + journey.coofficename + "</b> instead of your primary office.");
+                
+                    if (journey.modeoftransport === "TRANSIT") {
+                        var request1 = {
+                            origin: { query: journey.originaddress },
+                            destination: { query: journey.coofficeaddress },
+                            travelMode: "BICYCLING",
+                            drivingOptions: {
+                                departureTime: journey.departuredatetime,
+                                trafficModel: 'bestguess'
+                            }
+                        };
+
+                        directionsService.route(request1, function(result1, status1) {
+                            if (status1 === 'OK') {
+                                var route1 = result1.routes[0]; // get the first (best) route
+                                var cyclingdistance = route1.legs[0].distance.text;
+                                var cyclingduration = route1.legs[0].duration.text;
+
+                                var tmp = $('#recommendation').html();
+                                $('#recommendation').html(tmp + " Consider cycling (<b>" + cyclingduration + "</b>, <b>" + cyclingdistance + "</b>) instead of taking bus/MRT (<b>" + journey.coofficeduration + "</b>, <b>" + journey.coofficedistance + "</b>) to stay active as well.");
+                            }
+                        });
+                    }                  
+                } else   
+                    $('#recommendation-row').addClass('hidden');
+            } else
+                alert('Failed to get primary office direction from Google Map. Please try again.');
+        }); 
+    }
+
+    // fetch route based on origin address, destination address, departure date/time and mode of transport
+    function fetchMap() {     
+        
+        let request = {
+            origin: { query: journey.originaddress },
+            destination: { query: journey.coofficeaddress },
+            travelMode: google.maps.TravelMode[journey.modeoftransport.toUpperCase()],
+            drivingOptions: {
+                departureTime: journey.departuredatetime,
                 trafficModel: 'bestguess'
             }
         };
@@ -57,9 +124,13 @@ $(document).ready(function() {
                 var route = result.routes[0]; // get the first (best) route
                 $('#distance').val(route.legs[0].distance.text);
                 $('#duration').val(route.legs[0].duration.text);
-
-                var arrivalDateTime = new Date(departureDateTime.getTime()); // clone the date object
+                
+                var arrivalDateTime = new Date(journey.departuredatetime.getTime()); // clone the date object
                 arrivalDateTime.setMinutes(arrivalDateTime.getMinutes() + parseDuration(route.legs[0].duration.text));
+
+                journey.coofficeduration = route.legs[0].duration.text;
+                journey.coofficedistance = route.legs[0].distance.text;
+                journey.coofficearrivaltime = arrivalDateTime;
 
                 // format the arrival time in hh:mm am/pm
                 var options = {
@@ -71,7 +142,9 @@ $(document).ready(function() {
                     hour12: true
                 };
                 
-                $('#estimatedArrivalTime').val(arrivalDateTime.toLocaleString('en-GB', options).replace(',', ''));      
+                $('#estimatedArrivalTime').val(arrivalDateTime.toLocaleString('en-GB', options).replace(',', '')); 
+          
+                giveRecommendation();
             } else
                 alert('Failed to get directions from Google Map. Please try again.');
         });
@@ -99,8 +172,8 @@ $(document).ready(function() {
     }  
 
     // fetch weather data from NEA weather API and filter by date & time
-    function fetchWeatherData(date, time) {
-        var userSelectedDate = date + "T" + time + ":00";
+    function fetchWeatherData() {
+        var userSelectedDate = journey.departuredate + "T" + journey.departuretime + ":00";
         
         var apiUrl = `https://api-open.data.gov.sg/v2/real-time/api/twenty-four-hr-forecast?date=${encodeURIComponent(userSelectedDate)}`;
 
@@ -199,4 +272,96 @@ $(document).ready(function() {
             alert('Geolocation is not supported by this browser.');
         }
     }
+
+
+/*
+    function fetchMap(originAddress, endAddress, departureDate, departureTime, modeOfTransport) {     
+        var departureDateTime = new Date(`${departureDate}T${departureTime}`);
+
+        let request = {
+            origin: { query: originAddress },
+            destination: { query: endAddress },
+            travelMode: google.maps.TravelMode[modeOfTransport.toUpperCase()],
+            drivingOptions: {
+                departureTime: departureDateTime,
+                trafficModel: 'bestguess'
+            }
+        };
+
+        directionsService.route(request, function(result, status) {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(result);
+
+                // extract route information
+                var route = result.routes[0]; // get the first (best) route
+                $('#distance').val(route.legs[0].distance.text);
+                $('#duration').val(route.legs[0].duration.text);
+
+                var arrivalDateTime = new Date(departureDateTime.getTime()); // clone the date object
+                arrivalDateTime.setMinutes(arrivalDateTime.getMinutes() + parseDuration(route.legs[0].duration.text));
+
+                // format the arrival time in hh:mm am/pm
+                var options = {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    hour12: true
+                };
+                
+                $('#estimatedArrivalTime').val(arrivalDateTime.toLocaleString('en-GB', options).replace(',', '')); 
+                
+                return { distanceText: route.legs[0].distance.text,
+                         durationText: route.legs[0].duration.text,
+            } else
+                alert('Failed to get directions from Google Map. Please try again.');
+        });
+    }
+*/
+
+/* 
+    function fetchWeatherData(date, time) {
+        var userSelectedDate = date + "T" + time + ":00";
+        
+        var apiUrl = `https://api-open.data.gov.sg/v2/real-time/api/twenty-four-hr-forecast?date=${encodeURIComponent(userSelectedDate)}`;
+
+        axios.get(apiUrl)
+            .then(response => {
+                // handle successful response, accessing specific data from the response
+                var forecast = response.data.data.records[0];
+              
+                $('#temperature').text(forecast.general.temperature.low + " - " + forecast.general.temperature.high + "°C");
+                $('#weatherperiod').text("NEA forecast: " + forecast.general.validPeriod.text);
+
+                var periods = forecast.periods;
+                var userDate = new Date(userSelectedDate);
+                var found = false;
+
+                for (i = 0; i < periods.length && !found; i++) {    
+                    var startDateTime = new Date(periods[i].timePeriod.start);
+                    var endDateTime = new Date(periods[i].timePeriod.end);
+            
+                    if (userDate >= startDateTime && userDate <= endDateTime) {
+                        $('#weather').text(periods[i].regions.central.text);
+                        $('#weatherimg').attr("src", getWeatherIcon(periods[i].regions.central.text));
+                        found = true;
+                    }
+                }    
+            })
+            .catch(error => {
+                // Handle error here
+                if (error.response) {
+                    console.error('Error Status Code:', error.response.status);
+                    console.error('Error Response Data:', error.response.data);
+                    console.error('Return Code:', error.response.data.code);
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                } else {
+                    console.error('Error:', error);
+                }
+            });
+    }
+*/
+
 });
