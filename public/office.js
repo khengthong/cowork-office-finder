@@ -70,6 +70,8 @@ $(document).ready(function() {
                 journey.priofficeduration = route.legs[0].duration.text;                
                 var timesaving = parseDuration(journey.priofficeduration) - parseDuration(journey.coofficeduration);
             
+                console.log ("Time saving: " + timesaving + ", pri office duration: " + parseDuration(journey.priofficeduration) + ", co office duration: " + parseDuration(journey.coofficeduration));
+                
                 if (timesaving > 0) {
                     $('#recommendation-row').removeClass('hidden');
                     $('#recommendation').html("Good choice! Save <b>" + timesaving + " mins</b> on your commute by choosing the coworking office at <b>" + journey.coofficename + "</b> instead of your primary office.");
