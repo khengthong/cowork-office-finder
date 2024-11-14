@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import pg from "pg";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
@@ -49,7 +48,6 @@ app.use(passport.session());
 let offices = [];
 let offices_and_distance = [];
 getOffices ();
-
 let authenticated_user = {id: null,
                           email: "",
                           password: "",
@@ -65,6 +63,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+/* handle logout */
 app.get("/logout", (req, res) => {
   req.logout(function (err) {
     if (err) {
@@ -74,23 +73,21 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
+/* handle oauth using Google */
+app.get("/auth/google", passport.authenticate("google", {
+                          scope: ["profile", "email"],
   })
 );
 
-app.get(
-  "/auth/google/handleauth",
-  passport.authenticate("google", {
-    successRedirect: "/confirm",
-    failureRedirect: "/",
+/* handle Google authentication */
+app.get("/auth/google/handleauth", passport.authenticate("google", {
+                          successRedirect: "/confirm",
+                          failureRedirect: "/",
   })
 );
 
+/* process successful redirection */
 app.get("/confirm", async (req, res) => {
-  console.log ("In /confirm");
 
   if (req.isAuthenticated()) {
     try {
@@ -122,22 +119,22 @@ app.get("/confirm", async (req, res) => {
   }
 });
 
+/* save user profile */
 app.post("/saveprofile", async (req, res) => {
    if (req.isAuthenticated()) {
     try {
-      var a = req.body;  
-      console.log ("/saveprofile req.user.id: " + req.user.id);
+      var user = req.body;  
 
       const newUser = await db.query(
           "UPDATE users SET homeaddress = $1, priofficename = $2, priofficeaddress = $3, primodeoftransport = $4 WHERE id = $5",
-          [a.homeaddress, a.priofficename, a.priofficeaddress, a.primodeoftransport, req.user.id]
+          [user.homeaddress, user.priofficename, user.priofficeaddress, user.primodeoftransport, req.user.id]
         );
 
       authenticated_user.id = req.user.id;
-      authenticated_user.homeaddress = a.homeaddress;
-      authenticated_user.priofficename = a.priofficename;
-      authenticated_user.priofficeaddress = a.priofficeaddress;
-      authenticated_user.primodeoftransport = a.primodeoftransport;
+      authenticated_user.homeaddress = user.homeaddress;
+      authenticated_user.priofficename = user.priofficename;
+      authenticated_user.priofficeaddress = user.priofficeaddress;
+      authenticated_user.primodeoftransport = user.primodeoftransport;
 
       res.render("start.ejs");
     } catch (err) {
@@ -150,9 +147,8 @@ app.post("/saveprofile", async (req, res) => {
   }
 });
 
-passport.use(
-  "google",
-  new GoogleStrategy(
+/* use Google Strategy for authentication */
+passport.use("google", new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -161,25 +157,20 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, cb) => {
       try {
-        console.log ("In GoogleStrategy - email: " + profile.email);
-
-        const result = await db.query("SELECT * FROM users WHERE email = $1", [
-          profile.email,
-        ]);
+        const result = await db.query("SELECT * FROM users WHERE email = $1", [ profile.email, ]);
+        
         if (result.rows.length === 0) {
             const newUser = await db.query(
             "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
             [profile.email, "google"]
           );
 
-          console.log ("In GoogleStrategy - newUser: " + newUser.rows[0]);
-
           return cb(null, newUser.rows[0]);                                                 
         } else {
           return cb(null, result.rows[0]);
         }
       } catch (err) {
-        console.log ("Except in insert user " + err);
+        console.log ("Exception in inserting user " + err);
         return cb(err);
       }
     }
