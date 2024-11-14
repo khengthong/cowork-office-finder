@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Co-work Office Finder</title>
+  <title>SG Co-Working Office Finder</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
    <!-- Google tag (gtag.js) -->
    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7T8E9JCRNG"></script>
@@ -22,15 +22,46 @@
   <div class="container-fluid px-0"> <!-- Use container-fluid to remove padding for the image -->
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
         <div class="col-12 col-lg-6"> <!-- Adjust column for the image -->
-            <img src="images/hero.jpg" class="img-fluid w-100" alt="Co-work Office" loading="lazy"> <!-- Use w-100 for full width -->
+            <img src="images/hero.jpg" class="img-fluid w-100 rounded" alt="Co-work Office" loading="lazy"> <!-- Full width and rounded corners -->
+        </div>
+        <div class="col-lg-6 text-center text-lg-start"> <!-- Center text on small screens, left-align on larger -->
+            <h1 class="display-5 fw-bold text-body-emphasis mb-4 ms-3 me-3">SG Co-Working Office Finder</h1> <!-- Add horizontal margin -->
+            <p class="lead mb-4 ms-3 me-3"> <!-- Add horizontal margin -->
+                This user-friendly web app helps you discover available co-working spaces nearby, minimizing commute times during peak hours and promoting sustainable transportation options like walking and cycling.
+                <br><br>
+                To provide personalized recommendations, the app will request permission to access your current location.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="/start" class="btn btn-success btn-lg px-4 me-md-3 mb-2 mb-md-0 ms-3 me-3">Start Exploring</a> <!-- Add horizontal margin -->
+                <a href="/auth/google" class="btn btn-outline-primary btn-lg px-4 ms-3"> <!-- Add horizontal margin -->
+                    <i class="fab fa-google"></i> Sign In with Google
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+  <div class="container-fluid px-0"> 
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-12 col-lg-6"> 
+            <img src="images/hero.jpg" class="img-fluid w-100" alt="Co-work Office" loading="lazy"> 
         </div>
         <div class="col-lg-6">
-            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Co-work Office Finder</h1>
-            <p class="lead">This handy web app helps you to find available co-work offices near you, reducing commuting time during rush hours and encouraging the use of greener transport options (e.g. walk, cycle).<br><br>
-                <span>In order to recommend co-work offices near you, this app requires permission to access your current location.</span>
+            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">SG Co-Working Office Finder</h1>
+            <p class="lead">
+              This user-friendly web app helps you discover available co-working spaces nearby, minimizing commute times during peak hours and promoting sustainable transportation options like walking and cycling.
+              <br><br>
+              To provide personalized recommendations, the app will request permission to access your current location.
             </p>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <a href="/start" class="btn btn-primary btn-lg px-4 me-sm-3">Start</a>
+
+                <a href="/auth/google" class="btn btn-primary btn-lg px-4 me-sm-3" role="button">
+                  <i class="fab fa-google"></i>
+                  Sign In with Google
+                </a>
+              -->
+  <!--          <a href="/logout" class="btn btn-primary btn-lg px-4 me-sm-3">Logout</a>    -->
             </div>
         </div>
     </div>

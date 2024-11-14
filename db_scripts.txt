@@ -33,3 +33,15 @@ INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, 
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Ghim Moh - MOE HQ', 'MOE', '285 Ghim Moh Road Singapore 279622', '279622', 80, 50, 'office2.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Balestier - MOE HQ', 'MOE', '565 Balestier Road Balestier Hill Pri School Singapore 329927', '329927', 80, 50, 'office3.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('JTC Summit', 'JTC', '8 Jurong Town Hall Road Singapore 609434', '609434', 80, 50, 'office4.jpg');
+
+
+CREATE TABLE users(
+id SERIAL PRIMARY KEY,
+email VARCHAR(100) NOT NULL UNIQUE,
+password VARCHAR(100),
+name VARCHAR(100),
+homeaddress VARCHAR(100),
+priofficename VARCHAR(100),
+priofficeaddress VARCHAR(100),
+primodeoftransport VARCHAR(20)
+);

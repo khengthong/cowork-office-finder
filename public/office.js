@@ -34,7 +34,8 @@ $(document).ready(function() {
             originaddress: $('#currentLocation').prop("innerText"),
             coofficename: $('#officeTitle').prop("innerText"),
             coofficeaddress: $('#officeAddress').prop("innerText"),
-            priofficeaddress: "Singapore 117438",
+            priofficename: $('#priofficename').val(),
+            priofficeaddress: $('#priofficeaddress').val(),
             departuredate: departureDate,
             departuretime: departureTime,
             departuredatetime: departureDateTime,
@@ -42,69 +43,111 @@ $(document).ready(function() {
             coofficeduration: "",
             coofficedistance: "",
             coofficearrivaltime: null,
-            primodeoftransport: "TRANSIT",
+            primodeoftransport: $('#primodeoftransport').val(),
             priofficeduration: "",
             priofficedistance: ""
         };
-                
+               
+        console.log ("ShowMapandWeather - originaddress: " + journey.originaddress);
+
         fetchMap();
         fetchWeatherData();
     }
-    
+
     function giveRecommendation() {
-        let request = {
-            origin: { query: journey.originaddress },
-            destination: { query: journey.priofficeaddress },
-            travelMode: google.maps.TravelMode[journey.primodeoftransport.toUpperCase()],
-            drivingOptions: {
-                departureTime: journey.departuredatetime,
-                trafficModel: 'bestguess'  // possible options: pessimistic, optimistic
-            }
-        };
-
-        directionsService.route(request, function(result, status) {
-            if (status === 'OK') {
+        if (journey.priofficeaddress.length > 0) {
+            let request = {
+                origin: { query: journey.originaddress },
+                destination: { query: journey.priofficeaddress },
+                travelMode: google.maps.TravelMode[journey.primodeoftransport.toUpperCase()],
+                drivingOptions: {
+                    departureTime: journey.departuredatetime,
+                    trafficModel: 'bestguess'
+                }
+            };
     
-                var route = result.routes[0]; // get the first (best) route
-                journey.priofficedistance = route.legs[0].distance.text;
-                journey.priofficeduration = route.legs[0].duration.text;                
-                var timesaving = parseDuration(journey.priofficeduration) - parseDuration(journey.coofficeduration);
-            
-                console.log ("Time saving: " + timesaving + ", pri office duration: " + parseDuration(journey.priofficeduration) + ", co office duration: " + parseDuration(journey.coofficeduration));
-                
-                if (timesaving > 0) {
-                    $('#recommendation-row').removeClass('hidden');
-                    $('#recommendation').html("Good choice! Save <b>" + timesaving + " mins</b> on your commute by choosing the coworking office at <b>" + journey.coofficename + "</b> instead of your primary office.");
-                
-                    if (journey.modeoftransport === "TRANSIT") {
-                        var request1 = {
-                            origin: { query: journey.originaddress },
-                            destination: { query: journey.coofficeaddress },
-                            travelMode: "BICYCLING",
-                            drivingOptions: {
-                                departureTime: journey.departuredatetime,
-                                trafficModel: 'bestguess'
-                            }
-                        };
-
-                        directionsService.route(request1, function(result1, status1) {
-                            if (status1 === 'OK') {
-                                var route1 = result1.routes[0]; // get the first (best) route
-                                var cyclingdistance = route1.legs[0].distance.text;
-                                var cyclingduration = route1.legs[0].duration.text;
-
-                                var tmp = $('#recommendation').html();
-                                $('#recommendation').html(tmp + " Consider cycling (<b>" + cyclingduration + "</b>, <b>" + cyclingdistance + "</b>) instead of taking bus/MRT (<b>" + journey.coofficeduration + "</b>, <b>" + journey.coofficedistance + "</b>) to stay active as well.");
+            directionsService.route(request, function(result, status) {
+                if (status === 'OK') {
+                    var route = result.routes[0];
+                    journey.priofficedistance = route.legs[0].distance.text;
+                    journey.priofficeduration = route.legs[0].duration.text;
+                    var timesaving = parseDuration(journey.priofficeduration) - parseDuration(journey.coofficeduration);
+    
+                    if (timesaving > 0) {
+                        $('#recommendation-row').removeClass('hidden');
+                        $('#recommendation').html("Good choice! Save <b>" + timesaving + " mins</b> on your commute by choosing the co-working office at <b>" + journey.coofficename + "</b> (" + journey.coofficeduration + ", " + journey.coofficedistance + ") instead of your primary office at <b>" + journey.priofficename + "</b> (" + journey.priofficeduration + ", " + journey.priofficedistance + ").");
+    
+                        aux_giveRecommendation().then(recommendation => {
+                            if (recommendation) {
+                                var tmp = $('#recommendation').html() + " " + recommendation;
+                                $('#recommendation').html(tmp);
                             }
                         });
-                    }                  
-                } else   
+                    } else {
+                        $('#recommendation-row').addClass('hidden');
+                        console.log("Has timing by travelling to co-work office than pri office. Authenticated user");
+                    }
+                } else {
+                    alert('Failed to get primary office direction from Google Map. Please try again.');
+                }
+            });
+        } else {
+            // Handle case with no primary office address available
+            aux_giveRecommendation().then(recommendation => {
+                if (recommendation) {
+                    $('#recommendation-row').removeClass('hidden');
+                    $('#recommendation').html(recommendation);
+                } else {
+                    console.log('Setting recommendation card to hidden due to negative timesaving.');
+                    $('#recommendation-row').removeClass('hidden');
                     $('#recommendation-row').addClass('hidden');
-            } else
-                alert('Failed to get primary office direction from Google Map. Please try again.');
-        }); 
+                    console.log('Recommendation card visible:', $('#recommendation-row').is(':visible'));
+                    console.log("after aux_giveRecommendation call. Anonymous");
+                }
+            });
+        }
     }
 
+    function aux_giveRecommendation() {
+        return new Promise((resolve, reject) => {
+            if (journey.modeoftransport !== "BICYCLING") {
+                var request = {
+                    origin: { query: journey.originaddress },
+                    destination: { query: journey.coofficeaddress },
+                    travelMode: "BICYCLING",
+                    drivingOptions: {
+                        departureTime: journey.departuredatetime,
+                        trafficModel: 'bestguess'
+                    }
+                };
+    
+                directionsService.route(request, function(result, status) {
+                    if (status === 'OK') {
+                        var route = result.routes[0]; // get the first (best) route
+                        var cyclingdistance = route.legs[0].distance.text;
+                        var cyclingduration = route.legs[0].duration.text;
+    
+                        var timesaving = parseDuration(journey.coofficeduration) - parseDuration(cyclingduration);
+                
+                        console.log("Cycling duration: " + cyclingduration + ", cooffice duration: " + journey.coofficeduration + " timesaving: " + timesaving);
+    
+                        if (timesaving > 0) {
+                            var recommendation = "Consider cycling (<b>" + cyclingduration + "</b>, <b>" + cyclingdistance + "</b>) instead of " + (journey.modeoftransport === "TRANSIT" ? "taking bus / MRT " : journey.modeoftransport.toLowerCase()) + " (<b>" + journey.coofficeduration + "</b>, <b>" + journey.coofficedistance + "</b>) to the co-working office to stay active!";
+                            console.log(recommendation);
+                            resolve(recommendation); // Resolve the promise with the recommendation string
+                        } else {
+                            resolve(null); // Resolve with null
+                        }
+                    } else {
+                        resolve(null); // Resolve with null if there is an error in the route
+                    }
+                });
+            } else {
+                resolve(null); // Resolve with null if mode of transport is "BICYCLING"
+            }
+        });
+    }
+   
     // fetch route based on origin address, destination address, departure date/time and mode of transport
     function fetchMap() {     
         
