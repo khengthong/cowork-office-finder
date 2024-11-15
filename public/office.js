@@ -3,7 +3,12 @@ $(document).ready(function() {
     let today = new Date().toLocaleDateString('en-CA'); // 'en-CA' gives YYYY-MM-DD format;
     
     $('#departureDate').val(today);
-    let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    //let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let now = new Date();
+    let hours = String(now.getHours()).padStart(2, '0');
+    let minutes = String(now.getMinutes()).padStart(2, '0');
+    let currentTime = `${hours}:${minutes}`;
+    
     $('#departureTime').val(currentTime);
 
     // initialize Google Map
