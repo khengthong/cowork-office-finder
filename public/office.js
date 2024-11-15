@@ -114,14 +114,39 @@ $(document).ready(function() {
     }
 
     function handleRecommendationPanel (input) {
+        console.log ("handleRecommendation - input: " + input + ", row: " + $('#recommendation-row').hasClass('row') + ", status: " + $('#recommendation-row').hasClass('hidden'));
+        
+        if (input === "SHOW") {
+
+            if (! $('#recommendation-row').hasClass('row')) 
+                $('#recommendation-row').addClass('row');
+
+            if ($('#recommendation-row').hasClass('hidden'))
+                $('#recommendation-row').removeClass('hidden');
+
+            console.log("HandleRecommendationPanel - show Recommendation");
+        }
+        else if (input === "HIDE") {
+
+            if ($('#recommendation-row').hasClass('row')) 
+                $('#recommendation-row').removeClass('row');
+            
+            if (! $('#recommendation-row').hasClass('hidden'))
+                $('#recommendation-row').addClass('hidden');
+
+            console.log("HandleRecommendationPanel - hide Recommendation");
+        }
+/*
         if (input === "SHOW" && $('#recommendation-row').hasClass('hidden')) {
             $('#recommendation-row').toggleClass('hidden');
+            $('#recommendation-row').addClass('row');
             console.log("HandleRecommendationPanel - show Recommendation");
         }
         else if (input === "HIDE" && ! $('#recommendation-row').hasClass('hidden')) {
             $('#recommendation-row').toggleClass('hidden');
+            $('#recommendation-row').removeClass('row');
             console.log("HandleRecommendationPanel - hide Recommendation");
-        }
+        } */
     }
         
     async function aux_giveRecommendation() {
