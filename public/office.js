@@ -3,7 +3,7 @@ $(document).ready(function() {
     let today = new Date().toLocaleDateString('en-CA'); // 'en-CA' gives YYYY-MM-DD format;
     
     $('#departureDate').val(today);
-    //let currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
     let now = new Date();
     let hours = String(now.getHours()).padStart(2, '0');
     let minutes = String(now.getMinutes()).padStart(2, '0');
@@ -141,17 +141,6 @@ $(document).ready(function() {
 
             console.log("HandleRecommendationPanel - hide Recommendation");
         }
-/*
-        if (input === "SHOW" && $('#recommendation-row').hasClass('hidden')) {
-            $('#recommendation-row').toggleClass('hidden');
-            $('#recommendation-row').addClass('row');
-            console.log("HandleRecommendationPanel - show Recommendation");
-        }
-        else if (input === "HIDE" && ! $('#recommendation-row').hasClass('hidden')) {
-            $('#recommendation-row').toggleClass('hidden');
-            $('#recommendation-row').removeClass('row');
-            console.log("HandleRecommendationPanel - hide Recommendation");
-        } */
     }
         
     async function aux_giveRecommendation() {
@@ -186,7 +175,7 @@ $(document).ready(function() {
                     console.log("Cycling duration: " + cyclingduration + ", cooffice duration: " + journey.coofficeduration + " timesaving: " + timesaving);
     
                     if (timesaving > 0) {
-                        return "Consider cycling (<b>" + cyclingduration + "</b>, <b>" + cyclingdistance + "</b>) instead of " + (journey.modeoftransport === "TRANSIT" ? "taking bus / MRT " : journey.modeoftransport.toLowerCase()) + " (<b>" + journey.coofficeduration + "</b>, <b>" + journey.coofficedistance + "</b>) to the co-working office to stay active!";
+                        return "Consider cycling (<b>" + cyclingduration + "</b>, <b>" + cyclingdistance + "</b>) instead of " + (journey.modeoftransport === "TRANSIT" ? "taking bus / MRT " : journey.modeoftransport.toLowerCase()) + " (<b>" + journey.coofficeduration + "</b>, <b>" + journey.coofficedistance + "</b>) to the co-working office" + (journey.modeoftransport === "DRIVING" || journey.modeoftransport === "TRANSIT" ? " to stay active!" : ".");
                     }
                 } else
                     return null;

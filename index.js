@@ -81,13 +81,13 @@ app.get("/auth/google", passport.authenticate("google", {
 
 /* handle Google authentication */
 app.get("/auth/google/handleauth", passport.authenticate("google", {
-                          successRedirect: "/confirm",
+                          successRedirect: "/profile",
                           failureRedirect: "/",
   })
 );
 
 /* process successful redirection */
-app.get("/confirm", async (req, res) => {
+app.get("/profile", async (req, res) => {
 
   if (req.isAuthenticated()) {
     try {
@@ -136,7 +136,7 @@ app.post("/saveprofile", async (req, res) => {
       authenticated_user.priofficeaddress = user.priofficeaddress;
       authenticated_user.primodeoftransport = user.primodeoftransport;
 
-      res.render("start.ejs");
+      res.redirect("/start");
     } catch (err) {
       console.log(err);
       var errormessage = "Oops, error in updating database. Please try again.";
