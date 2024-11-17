@@ -20,6 +20,42 @@ INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, 
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('JLG Garden House', 'JLG', '50 Yuan Ching Road, Jurong Lake Gardens Singapore 618661', '618661', 150, 100, 'office7.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('NCSS', 'NCSS', '170 Ghim Moh Road, Ulu Pandan Community Centre Singapore 279621', '279621', 60, 20, 'office8.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('M-Works@Bukit Merah', 'ESG', '2 Bukit Merah Central, Spring Singapore, Singapore 159835', '159835', 120, 90, 'office9.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('SLA@Revenue House', 'SLA', '55 Newton Road, Revenue House, Singapore 307987', '307987', 70, 40, 'office10.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('CREATE Tower', 'NRF', '1 Create Way Singapore 138602', '138602', 70, 40, 'office11.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('CSC@Tessensohn', 'CSC', '60 Tessensohn Road, Level 1, Singapore 217664', '217664', 100, 70, 'office12.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Enterprise Singapore', 'ESG', '230 Victoria St, Bugis Junction Office Tower, Singapore 188024', '188024', 60, 50, 'office13.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('M-Works@Tampines', 'NLB', '31 Tampines Ave 7 Tampines Regional Library Singapore 529620', '529620', 80, 40, 'office14.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Temasek Polytechnic', 'TP', '21 Tampines Ave 1 Temasek Polytechnic Singapore 529757', '529757', 120, 40, 'office15.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Buona Vista - MOE Building', 'MOE', '1 North Buona Vista Drive, MOE Building, Singapore 138675', '138675', 120, 40, 'office16.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Grande Road - MOE HQ', 'MOE', '51 Grange Road Singapore 249564', '249564', 70, 50, 'office17.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Academy of SG Teachers', 'MOE', '2 Malan Road Singapore 109433', '109433', 40, 20, 'office18.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('CSC@Changi', 'CSC', '2 Netheravon Road Singapore 508503', '508503', 40, 20, 'office19.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Ghim Moh - MOE HQ', 'MOE', '285 Ghim Moh Road Singapore 279622', '279622', 80, 50, 'office20.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Balestier - MOE HQ', 'MOE', '565 Balestier Road Balestier Hill Pri School Singapore 329927', '329927', 80, 50, 'office21.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('JTC Summit', 'JTC', '8 Jurong Town Hall Road Singapore 609434', '609434', 80, 50, 'office22.jpg');
+
+
+CREATE TABLE users(
+id SERIAL PRIMARY KEY,
+email VARCHAR(100) NOT NULL UNIQUE,
+password VARCHAR(100),
+name VARCHAR(100),
+homeaddress VARCHAR(100),
+priofficename VARCHAR(100),
+priofficeaddress VARCHAR(100),
+primodeoftransport VARCHAR(20)
+);
+
+Backup:
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('HPB Office', 'HPB', '3 Second Hospital Ave, HPB, Singapore 168937', '168937', 50, 30, 'office1.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('HDB Hub', 'HDB', '480 Lorong 6 Toa Payoh HDB Hub Singapore 310480', '310480', 120, 80, 'office2.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('JEM Office Tower', 'MND', '52 Jurong Gateway Road, Level 7, JEM Office Tower Singapore 608550', '608550', 60, 30, 'office3.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Mapletree Business City', 'GovTech', '30 Pasir Panjang Road, Level 11, MBC Singapore 117440', '117440', 80, 50, 'office4.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Our Tampines Hub', 'PSD', '1 Tampines Walk, Level 2, Our Tampines Hub, Singapore 528523', '528523', 100, 40, 'office5.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Centre of Building Research', 'HDB', '10 Woodlands Ave 8, HDB Centre of Building Research, Singapore 738973', '738973', 150, 100, 'office6.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('JLG Garden House', 'JLG', '50 Yuan Ching Road, Jurong Lake Gardens Singapore 618661', '618661', 150, 100, 'office7.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('NCSS', 'NCSS', '170 Ghim Moh Road, Ulu Pandan Community Centre Singapore 279621', '279621', 60, 20, 'office8.jpg');
+INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('M-Works@Bukit Merah', 'ESG', '2 Bukit Merah Central, Spring Singapore, Singapore 159835', '159835', 120, 90, 'office9.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('SLA@Revenue House', 'SLA', '55 Newton Road, Revenue House, Singapore 307987', '307987', 70, 40, 'office1.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('CREATE Tower', 'NRF', '1 Create Way Singapore 138602', '138602', 70, 40, 'office2.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('CSC@Tessensohn', 'CSC', '60 Tessensohn Road, Level 1, Singapore 217664', '217664', 100, 70, 'office3.jpg');
@@ -33,15 +69,3 @@ INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, 
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Ghim Moh - MOE HQ', 'MOE', '285 Ghim Moh Road Singapore 279622', '279622', 80, 50, 'office2.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('Balestier - MOE HQ', 'MOE', '565 Balestier Road Balestier Hill Pri School Singapore 329927', '329927', 80, 50, 'office3.jpg');
 INSERT INTO offices (officename, agencyname, address, pcode, max_cap, curr_cap, photoname) VALUES ('JTC Summit', 'JTC', '8 Jurong Town Hall Road Singapore 609434', '609434', 80, 50, 'office4.jpg');
-
-
-CREATE TABLE users(
-id SERIAL PRIMARY KEY,
-email VARCHAR(100) NOT NULL UNIQUE,
-password VARCHAR(100),
-name VARCHAR(100),
-homeaddress VARCHAR(100),
-priofficename VARCHAR(100),
-priofficeaddress VARCHAR(100),
-primodeoftransport VARCHAR(20)
-);
